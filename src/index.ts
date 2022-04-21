@@ -1,6 +1,7 @@
 import express from "express";
 import { defaultRouter } from "./routes";
 import * as dotenv from 'dotenv'
+import { RabbitMQ } from "./service/rabbitmq";
 dotenv.config()
 
 const app = express()
@@ -15,4 +16,6 @@ app.get('/', (_req, res) => {
   res.send('Hello Node Server')
 })
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+RabbitMQ.init()
+
+app.listen(PORT, () => console.log(`Server running on port http://localhost:${PORT}`))
