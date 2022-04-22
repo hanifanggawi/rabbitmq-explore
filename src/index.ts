@@ -19,4 +19,4 @@ app.get('/', (_req, res) => {
 
 RabbitMQ.init()
 
-app.listen(PORT, () => console.log(`Server running on port http://localhost:${PORT}`))
+app.listen(PORT, () => console.log(`Server started on http://localhost:${PORT}`))

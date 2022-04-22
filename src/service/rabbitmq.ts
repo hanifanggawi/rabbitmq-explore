@@ -37,17 +37,34 @@ export class RabbitMQ {
 
   private static async setConsumers(connection : Connection) {
     const channel: Channel = await connection.createChannel()
-    const queue = 'queue1'
-    await channel.assertQueue(queue)
-    channel.consume(queue, (message) => {
-      printMessage(message)
-      channel.ack(message as ConsumeMessage)
-    })       
+    new Queue('queue1', channel).subscribe(printMessage)
   }
 
-  async produce(message: string) {
+  async produce(message: object) {
     const channel: Channel = await this.connection.createChannel()
-    await channel.assertQueue('queue1')                  //  Makes the queue available to the client
-    channel.sendToQueue('queue1', Buffer.from(message))  //  Send a message to the queue
+    await new Queue('queue1', channel).publish(message)
+  }
+}
+
+class Queue {
+  private name: string
+  private channel: Channel
+
+  constructor(name: string, channel: Channel) {
+    this.name = name
+    this.channel = channel
+  }
+
+  async subscribe(handler: (msg: ConsumeMessage | null) => void) {
+    await this.channel.assertQueue(this.name)
+    this.channel.consume(this.name, (message) => {
+      handler(message)
+      this.channel.ack(message as ConsumeMessage)
+    })
+  }
+
+  async publish(message: object) {
+    await this.channel.assertQueue(this.name)                                 //  Makes the queue available to the client
+    this.channel.sendToQueue('queue1', Buffer.from(JSON.stringify(message)))  //  Send a message to the queue
   }
 }

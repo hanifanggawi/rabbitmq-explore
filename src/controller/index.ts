@@ -11,8 +11,8 @@ export function version(_req: Request, res: Response) {
   return res.send({ version: pkg.version })
 }
 
-export function produce(req: Request, res: Response) {
+export async function produce(req: Request, res: Response) {
   const { message } = req.params
-  RabbitMQ.get.produce(message)
-  res.status(200).send({ message: message })
+  await RabbitMQ.get.produce({ message })
+  res.status(200).send({ message })
 }
