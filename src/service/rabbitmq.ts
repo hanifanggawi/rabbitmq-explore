@@ -25,14 +25,10 @@ export class RabbitMQ {
   }
 
   private static async initConnection() {
-    const username = process.env.RABBITMQ_USERNAME
-    const password = process.env.RABBITMQ_PASSWORD
-    const host = process.env.RABBITMQ_HOST
-    const port = process.env.RABBITMQ_PORT
-
     const connection = await client.connect(
-      `amqp://${username}:${password}@${host}:${port}`
+      process.env.RABBITMQ_URL || 'amqp://username:password@localhost:5672'
     )
+    console.info(`Connected to RabbitMQ: ${process.env.RABBITMQ_URL}`)
 
     this.setConsumers(connection)
     

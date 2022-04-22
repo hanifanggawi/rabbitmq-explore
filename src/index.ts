@@ -1,8 +1,9 @@
 import express from "express";
 import { defaultRouter } from "./routes";
 import * as dotenv from 'dotenv'
+import * as dotenvExpand from 'dotenv-expand'
 import { RabbitMQ } from "./service/rabbitmq";
-dotenv.config()
+dotenvExpand.expand(dotenv.config()) 
 
 const app = express()
 const PORT = process.env.PORT || 8000
